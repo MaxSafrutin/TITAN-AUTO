@@ -32,23 +32,4 @@
     if (await copy(url)) announce('Ссылка на визитку скопирована');
     else window.prompt('Скопируйте ссылку на визитку', url);
   });
-  const dialog = document.getElementById('max-dialog');
-  let phone = '';
-  document.querySelectorAll('[data-max]').forEach(button => {
-    button.addEventListener('click', () => {
-      phone = button.dataset.max;
-      document.getElementById('max-phone').textContent = phone;
-      dialog.showModal();
-    });
-  });
-  document.getElementById('copy-phone')?.addEventListener('click', async () => {
-    if (await copy(phone)) announce('Номер скопирован — добавьте его в контакты');
-    else window.prompt('Скопируйте номер для MAX', phone);
-  });
-  dialog?.addEventListener('click', event => {
-    if (event.target === dialog) {
-      const rect = dialog.getBoundingClientRect();
-      if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dialog.close();
-    }
-  });
 })();
