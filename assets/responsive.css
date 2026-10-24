@@ -1,0 +1,91 @@
+/* Shared layout refinements for the landing page. */
+html { scroll-padding-top: 96px; }
+body { overflow-wrap: break-word; }
+button, a, summary { -webkit-tap-highlight-color: transparent; }
+a:focus-visible, button:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--red-hover);
+    outline-offset: 4px;
+}
+.header-inner { gap: 20px; }
+.nav { gap: 18px; }
+.nav a, .header-phone { white-space: nowrap; }
+.nav a { min-height: 44px; display: inline-flex; align-items: center; }
+.burger { width: 46px; height: 46px; justify-content: center; align-items: center; flex-shrink: 0; margin-right: 0; }
+.mobile-menu { max-height: calc(100dvh - 76px); overflow-y: auto; overscroll-behavior: contain; }
+.mobile-menu a { min-height: 46px; }
+.btn { justify-content: center; min-height: 48px; text-align: center; line-height: 1.4; }
+.btn i, .contact-action i, .team-social i, .hero-contact-mini i { flex-shrink: 0; }
+.cards-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); }
+.aswell-list { grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); }
+.hero-content, .hero-visual, .contact-grid > *, .contact-item > div, .telegram-copy > div { min-width: 0; }
+.contact-item .value { overflow-wrap: anywhere; }
+.contact-item .value small { display: block; margin-top: 4px; }
+.contact-actions { align-items: stretch; }
+.contact-map { align-self: start; }
+.contact-action { text-align: center; line-height: 1.5; }
+.accordion-header { min-height: 56px; }
+.accordion-title { min-width: 0; }
+.accordion-arrow { flex-shrink: 0; }
+.accordion-item.active .accordion-body { max-height: none; }
+.team-summary-copy { min-width: 0; }
+.team-intro { margin: 28px auto 22px; }
+.team-directory-action { display: flex; justify-content: center; margin: 0 0 30px; }
+.team-card { display: flex; flex-direction: column; }
+.team-card.featured { transform: none; }
+.team-card-body { display: flex; flex-direction: column; flex: 1; align-items: flex-start; }
+.team-card-body p { margin-bottom: 16px; }
+.team-social { min-height: 44px; margin-top: auto; font-size: .9rem; line-height: 1.5; overflow-wrap: anywhere; }
+.team-social + .team-social { margin-top: 8px; }
+.team-photo--brand { object-fit: contain; background: #0a0a0a; padding: 14px; }
+.telegram-card { display: grid; grid-template-columns: minmax(0, 1fr) minmax(360px, .9fr); }
+.channel-subscriptions { min-width: 0; align-items: stretch; }
+.channel-subscriptions .btn { min-height: 48px; }
+.footer .container { overflow-wrap: anywhere; }
+@media (max-width: 1200px) {
+    .header-inner { min-height: 76px; padding: 10px 0; }
+    .nav, .header-phone { display: none; }
+    .burger { display: flex; }
+}
+@media (max-width: 968px) {
+    .telegram-card { grid-template-columns: 1fr; }
+}
+@media (min-width: 769px) and (max-width: 968px) {
+    .team-grid > .team-card:last-child { grid-column: 1 / -1; max-width: 480px; width: 100%; justify-self: center; }
+}
+@media (max-width: 768px) {
+    .team-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .team-card.featured { grid-template-columns: 1fr; }
+    .team-card.featured .team-photo { height: 320px; min-height: 0; }
+    .team-card.featured .team-card-body { padding: 22px; }
+    .team-summary { gap: 14px; padding: 22px; }
+    .team-summary-action span { display: none; }
+    .team-summary-title { font-size: 1.3rem; line-height: 1.4; }
+    .team-summary-description { font-size: .9rem; }
+}
+@media (max-width: 560px) {
+    .team-grid { grid-template-columns: 1fr; }
+    .team-content { padding: 0 18px 24px; }
+    .team-directory-action .btn { width: 100%; }
+    .team-summary-copy { align-items: flex-start; gap: 12px; }
+    .team-summary-icon { width: 40px; height: 40px; font-size: 1.1rem; }
+    .team-card.featured .team-photo { height: 300px; }
+    .team-photo--brand { height: 260px; }
+    .contact-item { padding: 18px 16px; gap: 12px; }
+    .contact-map { padding: 22px 18px; }
+    .hero-actions .btn { width: 100%; }
+    .hero h1 { font-size: clamp(1.8rem, 8vw, 2.6rem); }
+    .telegram-copy { flex-direction: column; align-items: center; text-align: center; }
+    .channel-subscriptions { grid-template-columns: 1fr; }
+    .hero-stats { justify-content: center; }
+}
+@media (max-width: 360px) {
+    .container { padding-left: 16px; padding-right: 16px; }
+    .team-summary { padding: 18px 14px; }
+    .team-summary-title { font-size: 1.1rem; }
+    .team-summary-icon { display: none; }
+    .team-card-body, .team-card.featured .team-card-body { padding: 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
+    .fade-in { opacity: 1; transform: none; }
+}

@@ -1303,6 +1303,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/responsive.css?v=1">
 </head>
 <body>
 
@@ -1812,8 +1813,9 @@
                     <span class="team-summary-action"><span>Познакомиться</span><i class="fas fa-chevron-down"></i></span>
                 </summary>
                 <div class="team-content">
-                    <a href="managers/" class="btn btn-primary" style="margin-bottom:24px">Контакты и визитки менеджеров ↗</a>
+
                     <p class="team-intro">Мы не огромная безликая сеть. Мы небольшая команда людей, которые каждый день лично принимают автомобили, общаются с владельцами, проводят показы и отвечают за результат. Работаем профессионально, разговариваем по-человечески и относимся друг к другу почти как семья.</p>
+                    <div class="team-directory-action"><a href="managers/" class="btn btn-primary">Контакты и визитки менеджеров ↗</a></div>
                     <div class="team-grid">
                         <article class="team-card featured">
                             <img class="team-photo" src="assets/images/team/aleksandr-ambassador.webp" alt="Александр — байер, продавец и амбассадор ТИТАН АВТО" width="640" height="640" loading="lazy">
@@ -1826,7 +1828,7 @@
                             </div>
                         </article>
                         <article class="team-card">
-                            <img class="team-photo" src="managers/assets/titan-avatar.jpg" alt="Фирменный аватар ТИТАН АВТО — директор Дмитрий" width="1254" height="1254" loading="lazy">
+                            <img class="team-photo team-photo--brand" src="managers/assets/titan-avatar.jpg" alt="Фирменный аватар ТИТАН АВТО — директор Дмитрий" width="1254" height="1254" loading="lazy">
                             <div class="team-card-body">
                                 <span class="team-role">Директор</span>
                                 <h3>Дмитрий</h3>
@@ -1838,7 +1840,7 @@
                             <div class="team-card-body"><span class="team-role">Байер · выкуп · продажи</span><h3>Никита</h3><p>Оценивает автомобили, занимается выкупом и помогает подобрать честный вариант для покупки.</p></div>
                         </article>
                         <article class="team-card">
-                            <img class="team-photo" src="managers/assets/titan-avatar.jpg" alt="Фирменный аватар ТИТАН АВТО — Алексей Волгин" width="1254" height="1254" loading="lazy">
+                            <img class="team-photo team-photo--brand" src="managers/assets/titan-avatar.jpg" alt="Фирменный аватар ТИТАН АВТО — Алексей Волгин" width="1254" height="1254" loading="lazy">
                             <div class="team-card-body"><span class="team-role">Закупки · продажи · комиссия</span><h3>Алексей Волгин</h3><p>Менеджер отдела закупок, продаж и комиссионной реализации.</p><a class="team-social" href="managers/aleksey-volgin/"><i class="fas fa-address-card"></i> Контакты Алексея</a></div>
                         </article>
                         <article class="team-card">
@@ -1850,15 +1852,6 @@
                                 <a class="team-social" href="https://t.me/max_safrutin" target="_blank" rel="noopener noreferrer"><i class="fab fa-telegram-plane"></i> @max_safrutin</a>
                             </div>
                         </article>
-                    </div>
-                    <div class="team-moments">
-                        <h3>Мы не только работаем вместе</h3>
-                        <p>Здесь появятся живые кадры команды: встречи, события и моменты вне площадки.</p>
-                        <div class="team-moments-grid">
-                            <div class="moment-placeholder">assets/images/team/team-life-01.webp</div>
-                            <div class="moment-placeholder">assets/images/team/team-life-02.webp</div>
-                            <div class="moment-placeholder">assets/images/team/team-life-03.webp</div>
-                        </div>
                     </div>
                 </div>
             </details>
@@ -1956,10 +1949,24 @@
         const mobileMenu = document.getElementById('mobileMenu');
         const header = document.getElementById('header');
 
+        function closeMobileMenu() {
+            burger.classList.remove('active');
+            mobileMenu.classList.remove('open');
+            burger.setAttribute('aria-expanded', 'false');
+            burger.setAttribute('aria-label', 'Открыть меню');
+        }
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape' && mobileMenu.classList.contains('open')) { closeMobileMenu(); burger.focus(); }
+        });
+        document.addEventListener('click', event => {
+            if (!header.contains(event.target)) closeMobileMenu();
+        });
+        window.matchMedia('(min-width: 1201px)').addEventListener('change', closeMobileMenu);
         burger.addEventListener('click', () => {
             burger.classList.toggle('active');
             mobileMenu.classList.toggle('open');
             burger.setAttribute('aria-expanded', burger.classList.contains('active'));
+            burger.setAttribute('aria-label', burger.classList.contains('active') ? 'Закрыть меню' : 'Открыть меню');
         });
 
         // Закрывать меню при клике по ссылке
@@ -2008,7 +2015,7 @@
                     entry.target.classList.add('visible');
                 }
             });
-        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+        }, { threshold: 0, rootMargin: '0px' });
 
         fadeEls.forEach(el => observer.observe(el));
     </script>
