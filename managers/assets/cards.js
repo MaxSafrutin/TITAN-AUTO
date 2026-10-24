@@ -32,4 +32,34 @@
     if (await copy(url)) announce('Ссылка на визитку скопирована');
     else window.prompt('Скопируйте ссылку на визитку', url);
   });
+  const materials = document.getElementById('materials-dialog');
+  const mainPanel = document.querySelector('[data-materials-main]');
+  const channelsPanel = document.querySelector('[data-channels-panel]');
+  const backButton = document.querySelector('[data-channels-back]');
+  const title = document.getElementById('materials-title');
+  function showChannels(open) {
+    mainPanel.hidden = open;
+    channelsPanel.hidden = !open;
+    backButton.hidden = !open;
+    title.textContent = open ? 'Наши каналы' : 'Материалы о компании';
+  }
+  document.querySelector('[data-open-materials]')?.addEventListener('click', () => {
+    showChannels(false);
+    materials.showModal();
+    document.body.classList.add('modal-open');
+  });
+  document.querySelector('[data-close-materials]')?.addEventListener('click', () => materials.close());
+  document.querySelector('[data-open-channels]')?.addEventListener('click', () => {
+    showChannels(true);
+    backButton.focus();
+  });
+  backButton?.addEventListener('click', () => {
+    showChannels(false);
+    document.querySelector('[data-open-channels]').focus();
+  });
+  materials?.addEventListener('close', () => document.body.classList.remove('modal-open'));
+  materials?.addEventListener('click', event => {
+    const rect = materials.getBoundingClientRect();
+    if (event.target === materials && (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom)) materials.close();
+  });
 })();
