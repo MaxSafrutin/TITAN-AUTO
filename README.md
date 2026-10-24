@@ -4,10 +4,10 @@
 
 Каталог: https://maxsafrutin.github.io/TITAN-AUTO/managers/
 
-- `managers/maksim-safrutin/` — Максим Сафрутин.
-- `managers/aleksandr-belyaev/` — Александр Беляев.
-- `managers/nikita-kochetov/` — Никита Кочетов.
-- `managers/aleksey-volgin/` — Алексей Волгин.
+- `managers/aleksandr-belyaev/` — Беляев Александр.
+- `managers/aleksey-volgin/` — Волгин Алексей.
+- `managers/nikita-kochetov/` — Кочетов Никита.
+- `managers/maksim-safrutin/` — Сафрутин Максим.
 
 Каждая визитка — самостоятельная статическая страница с метаданными для отправки ссылки и файлом `contact.vcf` для импорта контакта. Общие стили и поведение находятся в `managers/assets/cards.css` и `cards.js`.
 
