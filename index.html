@@ -1065,6 +1065,17 @@
             box-shadow: 0 8px 26px rgba(34, 158, 217, 0.3);
         }
 
+        .channel-subscriptions {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            flex-shrink: 0;
+        }
+        .channel-subscriptions .btn { justify-content: center; padding: 12px 18px; font-size: 0.85rem; }
+        .telegram-copy { min-width: 0; }
+        @media (max-width: 968px) { .channel-subscriptions { width: 100%; } }
+        @media (max-width: 480px) { .channel-subscriptions { grid-template-columns: 1fr; } }
+
         /* ============ FOOTER ============ */
         .footer {
             background: #050505;
@@ -1343,7 +1354,7 @@
                 <div class="hero-actions">
                     <a href="tel:+79272651777" class="btn btn-primary"><i class="fas fa-phone-alt"></i> Позвонить сейчас</a>
                     <a href="https://www.avito.ru/brands/i217357739" target="_blank" rel="noopener" class="btn btn-outline"><i class="fas fa-car"></i> Наши авто на Авито</a>
-                    <a href="https://t.me/+WhiHgjMCvYJlMmIy" target="_blank" rel="noopener noreferrer" class="btn btn-outline"><i class="fab fa-telegram-plane"></i> Наш Telegram</a>
+                    <a href="https://t.me/+BmskrmrgVqI3Mjhi" target="_blank" rel="noopener noreferrer" class="btn btn-outline"><i class="fab fa-telegram-plane"></i> Telegram — открытый</a>
                 </div>
                 <div class="hero-stats">
                     <div class="hero-stat">
@@ -1368,7 +1379,8 @@
                             <a href="tel:+79272651777"><i class="fas fa-phone-alt"></i> 8 927 265-17-77 — Максим</a>
                             <a href="https://yandex.ru/navi/org/titan_avto/17587214231?si=amb6cqehcutceu2yetd3mcbr40" target="_blank" rel="noopener noreferrer"><i class="fas fa-map-marker-alt"></i> г. Самара, ул. Мирная, 3, корп. 1</a>
                             <a href="https://www.avito.ru/brands/i217357739" target="_blank" rel="noopener noreferrer"><i class="fas fa-car"></i> Наши автомобили на Авито</a>
-                            <a href="https://t.me/+WhiHgjMCvYJlMmIy" target="_blank" rel="noopener noreferrer"><i class="fab fa-telegram-plane"></i> Telegram-канал ТИТАН АВТО</a>
+                            <a href="https://t.me/+BmskrmrgVqI3Mjhi" target="_blank" rel="noopener noreferrer"><i class="fab fa-telegram-plane"></i> Telegram — открытый канал</a>
+                            <a href="https://t.me/+NwPVN30IthU2MzYy" target="_blank" rel="noopener noreferrer"><i class="fab fa-telegram-plane"></i> Telegram — закрытый канал</a>
                         </div>
                     </div>
                 </div>
@@ -1912,12 +1924,15 @@
                     <span class="telegram-icon" aria-hidden="true"><i class="fab fa-telegram-plane"></i></span>
                     <div>
                         <h2 id="telegram-title">Будьте в курсе новых автомобилей</h2>
-                        <p>Подпишитесь на наш Telegram-канал, чтобы первыми узнавать о новых поступлениях и выгодных предложениях.</p>
+                        <p>Выберите открытый или закрытый канал в Telegram или MAX, чтобы узнавать о новых поступлениях и выгодных предложениях.</p>
                     </div>
                 </div>
-                <a class="btn telegram-btn" href="https://t.me/+WhiHgjMCvYJlMmIy" target="_blank" rel="noopener noreferrer">
-                    <i class="fab fa-telegram-plane"></i> Подписаться на канал
-                </a>
+                <div class="channel-subscriptions" aria-label="Каналы ТИТАН АВТО">
+                    <a class="btn telegram-btn" href="https://t.me/+BmskrmrgVqI3Mjhi" target="_blank" rel="noopener noreferrer"><i class="fab fa-telegram-plane" aria-hidden="true"></i> Telegram — открытый</a>
+                    <a class="btn btn-outline" href="https://t.me/+NwPVN30IthU2MzYy" target="_blank" rel="noopener noreferrer"><i class="fas fa-lock" aria-hidden="true"></i> Telegram — закрытый</a>
+                    <a class="btn btn-outline" href="https://max.ru/channel_TITAN_AUTO" target="_blank" rel="noopener noreferrer"><img src="managers/assets/logo_max.svg" width="22" height="22" alt=""> MAX — открытый</a>
+                    <a class="btn btn-outline" href="https://max.ru/join/44l_5D4SGOZRhXFITF8nD99Y4OuGq4ryABkDILKxqf8" target="_blank" rel="noopener noreferrer"><i class="fas fa-lock" aria-hidden="true"></i> MAX — закрытый</a>
+                </div>
             </div>
         </div>
     </section>
