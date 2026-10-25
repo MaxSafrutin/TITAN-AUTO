@@ -45,10 +45,9 @@
   }
   document.querySelector('[data-open-materials]')?.addEventListener('click', () => {
     showChannels(false);
-    materials.showModal();
-    document.body.classList.add('modal-open');
+    window.TitanDialogs.open(materials);
   });
-  document.querySelector('[data-close-materials]')?.addEventListener('click', () => materials.close());
+  document.querySelector('[data-close-materials]')?.addEventListener('click', () => window.TitanDialogs.close(materials));
   document.querySelector('[data-open-channels]')?.addEventListener('click', () => {
     showChannels(true);
     backButton.focus();
@@ -56,10 +55,5 @@
   backButton?.addEventListener('click', () => {
     showChannels(false);
     document.querySelector('[data-open-channels]').focus();
-  });
-  materials?.addEventListener('close', () => document.body.classList.remove('modal-open'));
-  materials?.addEventListener('click', event => {
-    const rect = materials.getBoundingClientRect();
-    if (event.target === materials && (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom)) materials.close();
   });
 })();
