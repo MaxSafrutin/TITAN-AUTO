@@ -1086,3 +1086,7 @@ dialog.modalCard{margin:16px auto;max-height:calc(100dvh - 32px);overflow-y:auto
 .contact-tagline{margin:0;color:#a0a0a0;font-size:11px;line-height:1.4}.cardFacts{flex-direction:column;align-items:center;gap:4px;padding:14px 0 22px;font-size:11px}.directory{margin-top:28px;margin-bottom:36px}
 
 .cardFacts { display:block; white-space:nowrap; text-align:center; font-size:clamp(9px,2.65vw,11px); line-height:1.8; }
+
+.contactTopActions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.contactTopActions .modalAction { min-width: 0; }
+@media(max-width:560px) { .contactTopActions { grid-template-columns: 1fr; } }
