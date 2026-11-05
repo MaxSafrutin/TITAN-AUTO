@@ -1,0 +1,83 @@
+name: Управление командой
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'publish — опубликовать, add — добавить, edit — изменить, delete — удалить'
+        type: choice
+        options: [publish, add, edit, delete]
+        default: publish
+      slug:
+        description: 'Адрес визитки, например aleksey-volgin'
+        type: string
+      name:
+        description: 'Имя и фамилия. При редактировании пустое поле сохраняет прежнее значение.'
+        type: string
+      role:
+        description: 'Должность'
+        type: string
+      bio:
+        description: 'Описание для команды. Введите дефис, чтобы очистить необязательное поле.'
+        type: string
+      photo:
+        description: 'Фото (ссылка HTTPS)'
+        type: string
+      phone:
+        description: 'Телефон. Без телефона участник виден только в команде.'
+        type: string
+      telegram:
+        description: 'Ссылка Telegram'
+        type: string
+      channel:
+        description: 'Ссылка на канал Telegram'
+        type: string
+      max:
+        description: 'Ссылка MAX'
+        type: string
+      email:
+        description: 'Почта'
+        type: string
+
+concurrency:
+  group: titan-auto-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: main
+      - name: Build the site
+        env:
+          TEAM_INPUTS: ${{ toJSON(inputs) }}
+        run: node build-pages.cjs
+      - name: Save team changes
+        run: |
+          if git diff --quiet -- team-seed.json; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- team-seed.json
+          git commit -m 'Update Titan Auto team'
+          git push origin HEAD:main
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.pages.outputs.page_url }}
+    steps:
+      - id: pages
+        uses: actions/deploy-pages@v4

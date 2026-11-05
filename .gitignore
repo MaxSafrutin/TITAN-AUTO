@@ -5,3 +5,6 @@ desktop.ini
 .idea/
 .vscode/
 source-materials/
+team-data.json
+team-data.json.tmp
+_site/
