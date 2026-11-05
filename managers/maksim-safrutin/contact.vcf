@@ -2,13 +2,7 @@ BEGIN:VCARD
 VERSION:3.0
 N:Сафрутин;Максим;;;
 FN:Максим Сафрутин
-ORG:ООО «ТИТАН АВТО»
-TITLE:Менеджер отдела закупок, продаж и ком
- иссионной реализации
-TEL;TYPE=WORK,VOICE:+79276522287
 TEL;TYPE=CELL,VOICE:+79272651777
-EMAIL;TYPE=INTERNET,WORK:max.safrutin@gmail.com
-TEL;TYPE=WORK,VOICE:+79277097900
-ADR;TYPE=WORK:;;Мирная, 3к1;Самара;;;Россия
+EMAIL;TYPE=INTERNET:max.safrutin@gmail.com
 URL:https://maxsafrutin.github.io/TITAN-AUTO/managers/maksim-safrutin/
 END:VCARD
