@@ -73,6 +73,7 @@ async function github(env, path, init = {}) {
     ...init, headers: {
       'Authorization': 'Bearer ' + env.GITHUB_ACTIONS_TOKEN,
       'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json',
+      'X-GitHub-Api-Version': '2026-03-10',
       'User-Agent': 'Titan-Auto-Director',
       ...init.headers,
     },
@@ -86,6 +87,20 @@ async function loadTeam(env) {
     headers: {'Accept':'application/vnd.github.raw+json', 'Cache-Control':'no-cache'},
   });
   return response.json();
+}
+
+async function publication(env, id) {
+  const response = await github(env, '/actions/runs/' + id);
+  const run = await response.json();
+  if (run.path !== '.github/workflows/team.yml') return page(back + '<h1>Публикация не найдена</h1>', 404);
+  if (run.status !== 'completed') {
+    return page('<meta http-equiv="refresh" content="5"><h1>Правка публикуется</h1><p>Эта страница обновится автоматически.</p>');
+  }
+  if (run.conclusion !== 'success') {
+    return page('<h1>Публикация не завершилась</h1><p>Номер запуска: ' + id +
+      '. Сообщите его тому, кто обслуживает сайт.</p>' + back, 502);
+  }
+  return page('<h1>Изменения опубликованы</h1>' + back);
 }
 
 function newSlug(name, team) {
@@ -108,6 +123,11 @@ export default {
     }
     if (!await authorized(request, env.DIRECTOR_PASSWORD)) {
       return page('<h1>Вход для директора</h1>', 401, {'WWW-Authenticate':'Basic realm="Titan Auto", charset="UTF-8"'});
+    }
+    const statusRoute = /^\/publication\/([0-9]+)$/.exec(url.pathname);
+    if (request.method === 'GET' && statusRoute) {
+      try { return await publication(env, statusRoute[1]); }
+      catch { return page('<h1>Не удалось проверить публикацию</h1><p>Номер запуска: ' + statusRoute[1] + '.</p>' + back, 502); }
     }
     const route = /^\/(edit|delete)\/([a-z0-9-]+)$/.exec(url.pathname);
     const action = route?.[1] || (url.pathname === '/add' ? 'add' : '');
@@ -151,8 +171,14 @@ export default {
       const response = await github(env, workflow + '/dispatches', {
         method: 'POST', body: JSON.stringify({ref:'main', inputs}),
       });
-      if (response.status !== 204) await response.body?.cancel();
-      return page('<h1>Правка отправлена на публикацию</h1><p>Она появится на сайте после сборки. Подождите минуту, затем обновите список.</p>' + back, 202);
+      const result = await response.json();
+      if (!Number.isSafeInteger(result.workflow_run_id) || result.workflow_run_id < 1) {
+        throw Error('GitHub did not return a workflow run ID');
+      }
+      return new Response(null, {
+        status: 303,
+        headers: {Location: '/publication/' + result.workflow_run_id, 'Cache-Control': 'no-store'},
+      });
     } catch (error) {
       console.error(error.message);
       return page(back + '<h1>Сервис временно недоступен</h1><p>Попробуйте ещё раз чуть позже.</p>', 502);
