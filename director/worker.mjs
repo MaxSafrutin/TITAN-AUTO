@@ -87,7 +87,11 @@ async function github(env, path, init = {}) {
       ...init.headers,
     },
   });
-  if (!response.ok) throw Error('GitHub API: ' + response.status);
+  if (!response.ok) {
+    const error = Error('GitHub API: ' + response.status);
+    error.githubStatus = response.status;
+    throw error;
+  }
   return response;
 }
 
@@ -184,6 +188,9 @@ export default {
       const response = await github(env, workflow + '/dispatches', {
         method: 'POST', body: JSON.stringify({ref:'main', inputs}),
       });
+      if (response.status === 204) {
+        return page('<h1>GitHub принял запрос</h1><p>GitHub не вернул номер запуска. Проверьте список через несколько минут.</p>' + back, 202);
+      }
       const result = await response.json();
       if (!Number.isSafeInteger(result.workflow_run_id) || result.workflow_run_id < 1) {
         throw Error('GitHub did not return a workflow run ID');
@@ -194,6 +201,16 @@ export default {
       });
     } catch (error) {
       console.error(error.message);
+      if (error.githubStatus) {
+        const hints = {
+          401: 'Проверьте срок действия токена GitHub в настройках кабинета.',
+          403: 'Проверьте, что токену разрешено Actions: Read and write для TITAN-AUTO.',
+          404: 'Проверьте, что токен выдан для репозитория MaxSafrutin/TITAN-AUTO.',
+          422: 'GitHub отклонил параметры публикации.',
+        };
+        return page(back + '<h1>Ошибка GitHub (' + error.githubStatus + ')</h1><p>' +
+          (hints[error.githubStatus] || 'Публикацию не удалось подтвердить.') + '</p>', 502);
+      }
       return page(back + '<h1>Сервис временно недоступен</h1><p>Попробуйте ещё раз чуть позже.</p>', 502);
     }
   },
