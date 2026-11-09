@@ -39,14 +39,51 @@ function picker() {
   const items = list().map(m => ({slug:m.slug,name:m.name,phone:m.phone,display:format(m.phone),photo:photo(m)}));
   return read('assets/site-common.js').replace(/\/\* PICKER:START \*\/[\s\S]*?\/\* PICKER:END \*\//, () => JSON.stringify(items));
 }
+function quickLink(url, label, icon) {
+  if (!url) return '';
+  return '<a class="contactQuick" href="'+esc(url)+'" aria-label="'+label+'" title="'+label+
+    '" data-tooltip="'+label+'"><img src="../assets/'+icon+'" alt="" width="29" height="29"></a>';
+}
+
+function phoneMethod(phone, label, links) {
+  return '<div class="contactMethod"><div class="contactMethod__main"><a class="contactMethod__number" href="tel:'+
+    phone+'">'+format(phone)+'</a><span class="contactMethod__label">'+label+
+    '</span></div><div class="contactMethod__actions">'+links+'</div></div>';
+}
+
+function contactMethods(m) {
+  const direct = quickLink('tel:'+m.phone, 'Позвонить', 'phone-logo.svg')+
+    quickLink(m.telegram, 'Telegram', 'telegram-logo.svg')+quickLink(m.max, 'MAX', 'logo_max.svg');
+  const extra = [[m.channel,'Канал Telegram'],[m.email && 'mailto:'+m.email,'Электронная почта']]
+    .filter(([url])=>url).map(([url,label])=>'<div class="contactMethod"><a class="contactMethod__number" href="'+
+      esc(url)+'">'+label+'</a></div>').join('');
+  const hotline = '+79277097900';
+  return phoneMethod(m.phone, 'Рабочий', direct)+
+    '<details class="contactAccordion"><summary><span>Ещё контакты</span><span class="contactAccordion__chevron" aria-hidden="true">⌄</span></summary>'+
+    '<div class="contactAccordion__body">'+extra+
+    phoneMethod(hotline, 'Горячая линия', quickLink('tel:'+hotline, 'Позвонить', 'phone-logo.svg'))+'</div></details>';
+}
+
 function card(m) {
   const original = originalCardFile(m, 'index.html');
   if (original) return original;
   const template = read('managers/aleksandr-belyaev/index.html');
   const actions = template.match(/<div class="contactTopActions">[\s\S]*?(?=<div class="contactMethod">)/)[0].replace('aleksandr-belyaev.vcf',m.slug+'.vcf');
   const tail = template.slice(template.indexOf('<div class="modalActions contactMaterials">'));
-  const methods = [[m.telegram,'Telegram'],[m.channel,'Канал Telegram'],[m.max,'MAX'],[m.email && 'mailto:'+m.email,'Почта']].filter(([url])=>url).map(([url,label])=>'<a class="site-button" href="'+esc(url)+'" rel="noopener noreferrer">'+label+'</a>').join(' ');
-  return '<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+esc(m.name)+' — ТИТАН АВТО</title><meta property="og:title" content="'+esc(m.name)+' — ТИТАН АВТО"><meta name="description" content="'+esc(m.role)+'"><link rel="icon" href="../../assets/brand/favicon.svg"><link rel="stylesheet" href="../assets/cards.css"><link rel="stylesheet" href="../../assets/site-common.css"><script src="../../assets/site-common.js" defer></script></head><body><main class="wrap wrap--contactsPage"><div><article class="card"><div class="card__body"><div class="contactSheet"><div class="contactHead"><div class="contactHero"><img class="contactAvatar" src="'+esc(photo(m))+'" alt="" width="96" height="96"><div class="contactHero__content"><h1 class="contactName">'+esc(m.name)+'</h1><p class="contactRole">'+esc(m.role)+'</p><a class="contactCompany contactCompanyLink" href="../../">ООО «ТИТАН АВТО»</a></div></div></div>'+actions+'<div class="contactMethod"><a class="contactMethod__number" href="tel:'+m.phone+'">'+format(m.phone)+'</a></div>'+methods+tail;
+  const head = '<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+
+    '<title>'+esc(m.name)+' — ТИТАН АВТО</title><meta property="og:title" content="'+esc(m.name)+' — ТИТАН АВТО">'+
+    '<meta property="og:image" content="'+esc(new URL(photo(m), 'https://maxsafrutin.github.io').href)+'">'+
+    '<meta name="description" content="'+esc(m.role)+'"><link rel="icon" href="../../assets/brand/favicon.svg">'+
+    '<link rel="stylesheet" href="../assets/cards.css"><link rel="stylesheet" href="../../assets/site-common.css">'+
+    '<script src="../../assets/site-common.js" defer></script></head>';
+  const hero = '<div class="contactHead"><div class="contactHero"><img class="contactAvatar" src="'+esc(photo(m))+
+    '" alt="" width="96" height="96"><div class="contactHero__content"><h1 class="contactName">'+esc(m.name)+
+    '</h1><p class="contactRole">'+esc(m.role)+'</p><a class="contactCompany contactCompanyLink" href="../../">ООО «ТИТАН АВТО»</a>'+
+    '<p class="contact-tagline">Автомобили с пробегом</p></div></div>'+
+    '<a class="contactBrandLogo" href="../../" aria-label="ТИТАН АВТО — главная">'+
+    '<img src="../../assets/brand/titan-auto-logo.svg" alt="ТИТАН АВТО"></a></div>';
+  return head+'<body><main class="wrap wrap--contactsPage"><div><article class="card"><div class="card__body">'+
+    '<div class="contactSheet">'+hero+actions+contactMethods(m)+tail;
 }
 function vcard(m) {
   const original = originalCardFile(m, 'contact.vcf');
