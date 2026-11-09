@@ -36,12 +36,21 @@ function list(team) {
       '">Редактировать</a><a href="/delete/' + escape(member.slug) + '">Удалить</a></nav></article>').join(''));
 }
 
-function form(member, action) {
+async function formToken(password, route) {
+  const encoder = new TextEncoder();
+  const key = await crypto.subtle.importKey('raw', encoder.encode(password),
+    {name:'HMAC', hash:'SHA-256'}, false, ['sign']);
+  const bytes = await crypto.subtle.sign('HMAC', key, encoder.encode('director-form:' + route));
+  return Array.from(new Uint8Array(bytes), b => b.toString(16).padStart(2,'0')).join('');
+}
+
+function form(member, action, token) {
   const url = member ? '/' + action + '/' + escape(member.slug) : '/add';
+  const hidden = '<input type="hidden" name="form_token" value="' + token + '">';
   if (action === 'delete') {
     return page(back + '<h1>Удалить сотрудника?</h1><p>' + escape(member.name) +
       ' исчезнет из команды, а ссылка на визитку перестанет открываться.</p><form method="post" action="' +
-      url + '"><button>Удалить сотрудника</button></form>');
+      url + '">' + hidden + '<button>Удалить сотрудника</button></form>');
   }
   const controls = Object.entries(fields).map(([name, label]) => {
     const value = escape(member?.[name]);
@@ -53,7 +62,7 @@ function form(member, action) {
   }).join('');
   return page(back + '<h1>' + (member ? 'Редактировать сотрудника' : 'Добавить сотрудника') +
     '</h1><p>Если телефон пустой, сотрудник появится только в разделе «Команда».</p>' +
-    '<form method="post" action="' + url + '">' + controls + '<button>Сохранить</button></form>');
+    '<form method="post" action="' + url + '">' + hidden + controls + '<button>Сохранить</button></form>');
 }
 
 async function authorized(request, password) {
@@ -135,7 +144,7 @@ export default {
     if (!['GET','POST'].includes(request.method) || (request.method === 'POST' && !action)) {
       return page(back + '<h1>Действие недоступно</h1>', 405);
     }
-    if (request.method === 'POST' && request.headers.get('Origin') !== url.origin) {
+    if (request.method === 'POST' && request.headers.get('Sec-Fetch-Site') === 'cross-site') {
       return page(back + '<h1>Откройте форму заново</h1>', 403);
     }
     try {
@@ -144,7 +153,8 @@ export default {
       const member = route && team.find(item => item.slug === route[2]);
       if (route && !member) return page(back + '<h1>Сотрудник не найден</h1>', 404);
       if (action === 'add' && team.length >= 10) return page(back + '<h1>Все 10 мест заняты</h1>', 409);
-      if (request.method === 'GET') return form(member, action);
+      const token = await formToken(env.DIRECTOR_PASSWORD, url.pathname);
+      if (request.method === 'GET') return form(member, action, token);
 
       if (!request.headers.get('Content-Type')?.startsWith('application/x-www-form-urlencoded') ||
           Number(request.headers.get('Content-Length')) > 16000) {
@@ -153,6 +163,9 @@ export default {
       const body = await request.text();
       if (body.length > 16000) return page(back + '<h1>Форма слишком большая</h1>', 413);
       const values = new URLSearchParams(body);
+      if (values.get('form_token') !== token) {
+        return page(back + '<h1>Откройте форму заново из списка команды</h1>', 403);
+      }
       const inputs = {action, slug: member?.slug || ''};
       if (action !== 'delete') {
         for (const key of Object.keys(fields)) {
