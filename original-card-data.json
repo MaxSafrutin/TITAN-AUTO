@@ -1,0 +1,35 @@
+[
+  {
+    "slug": "aleksandr-belyaev",
+    "name": "Александр Беляев",
+    "role": "Байер · продавец · амбассадор",
+    "photo": "assets/images/team/aleksandr-ambassador.webp",
+    "phone": "+79372322270",
+    "telegram": "https://t.me/a_b_show63",
+    "channel": "https://t.me/perekupshiy",
+    "max": "https://web.max.ru/81584412",
+    "email": null
+  },
+  {
+    "slug": "nikita-kochetov",
+    "name": "Никита Кочетов",
+    "role": "Байер · продавец",
+    "photo": "assets/images/team/nikita-kochetov.png",
+    "phone": "+79397163222",
+    "telegram": "https://t.me/+79397163222",
+    "channel": null,
+    "max": "https://web.max.ru/3181851",
+    "email": null
+  },
+  {
+    "slug": "aleksey-volgin",
+    "name": "Алексей Волгин",
+    "role": "Байер · продавец",
+    "photo": "",
+    "phone": "+79279003844",
+    "telegram": "https://t.me/+79279003844",
+    "channel": null,
+    "max": "https://web.max.ru/320122708",
+    "email": null
+  }
+]

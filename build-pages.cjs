@@ -12,6 +12,17 @@ const base = '/TITAN-AUTO';
 const photo = m => /^https:\/\//.test(m.photo) ? m.photo : base + '/' + (m.photo || fallback);
 const href = m => base + '/managers/' + m.slug + '/';
 const format = p => p.replace(/^\+7(\d{3})(\d{3})(\d{2})(\d{2})$/, '+7 ($1) $2-$3-$4');
+const originalCards = require('./original-card-data.json');
+
+function originalCardFile(member, file) {
+  const original = originalCards.find(card => card.slug === member.slug);
+  if (!original) return null;
+  const unchangedFields = ['name', 'role', 'photo', 'telegram', 'channel', 'max', 'email'];
+  if (!unchangedFields.every(key => (original[key] || '') === (member[key] || ''))) return null;
+  return read('managers/' + member.slug + '/' + file)
+    .replaceAll(original.phone, member.phone)
+    .replaceAll(format(original.phone), format(member.phone));
+}
 const list = () => team.filter(m => m.phone).sort((a,b) => a.name.split(' ').at(-1).localeCompare(b.name.split(' ').at(-1), 'ru'));
 const splice = (html, name, content) => html.replace(new RegExp('<!-- '+name+':START -->[\\s\\S]*?<!-- '+name+':END -->'), () => content);
 function landing() {
@@ -29,7 +40,8 @@ function picker() {
   return read('assets/site-common.js').replace(/\/\* PICKER:START \*\/[\s\S]*?\/\* PICKER:END \*\//, () => JSON.stringify(items));
 }
 function card(m) {
-  if (m.original) return read('managers/'+m.slug+'/index.html');
+  const original = originalCardFile(m, 'index.html');
+  if (original) return original;
   const template = read('managers/aleksandr-belyaev/index.html');
   const actions = template.match(/<div class="contactTopActions">[\s\S]*?(?=<div class="contactMethod">)/)[0].replace('aleksandr-belyaev.vcf',m.slug+'.vcf');
   const tail = template.slice(template.indexOf('<div class="modalActions contactMaterials">'));
@@ -37,7 +49,8 @@ function card(m) {
   return '<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+esc(m.name)+' — ТИТАН АВТО</title><meta property="og:title" content="'+esc(m.name)+' — ТИТАН АВТО"><meta name="description" content="'+esc(m.role)+'"><link rel="icon" href="../../assets/brand/favicon.svg"><link rel="stylesheet" href="../assets/cards.css"><link rel="stylesheet" href="../../assets/site-common.css"><script src="../../assets/site-common.js" defer></script></head><body><main class="wrap wrap--contactsPage"><div><article class="card"><div class="card__body"><div class="contactSheet"><div class="contactHead"><div class="contactHero"><img class="contactAvatar" src="'+esc(photo(m))+'" alt="" width="96" height="96"><div class="contactHero__content"><h1 class="contactName">'+esc(m.name)+'</h1><p class="contactRole">'+esc(m.role)+'</p><a class="contactCompany contactCompanyLink" href="../../">ООО «ТИТАН АВТО»</a></div></div></div>'+actions+'<div class="contactMethod"><a class="contactMethod__number" href="tel:'+m.phone+'">'+format(m.phone)+'</a></div>'+methods+tail;
 }
 function vcard(m) {
-  if (m.original) return read('managers/'+m.slug+'/contact.vcf');
+  const original = originalCardFile(m, 'contact.vcf');
+  if (original) return original;
   const v = s => s.replace(/[\\,;]/g,'\\$&').replace(/\r?\n/g,'\\n');
   return ['BEGIN:VCARD','VERSION:3.0','N:'+v(m.name)+';;;;','FN:'+v(m.name),'ORG:ТИТАН АВТО','TITLE:'+v(m.role),'TEL;TYPE=WORK,VOICE:'+m.phone,...(m.email?['EMAIL:'+m.email]:[]),'END:VCARD',''].join('\r\n');
 }
